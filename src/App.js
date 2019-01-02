@@ -1,25 +1,46 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
+import Nav from './Nav'
+import ItemPage from './ItemPage'
+import {items} from './static_data'
 import './App.css';
 
 class App extends Component {
+
+  // initializing state for selecting tabs
+  state ={
+    ActiveTab: 0,
+    cart : []
+  }
+  //method to change the initial state
+  handleTabChange = (index)=>{
+    this.setState({
+      ActiveTab:index
+    });
+  }
+  // add items to cart
+  handleAddToCart = (item)=>{
+    this.setState({
+      cart : [...this.state.cart, item.id]
+    })
+  }
+  renderComponent = () => {
+    switch (this.state.ActiveTab) {
+      default:
+      case 0: return <ItemPage items={items} onAddToCart={this.handleAddToCart}/>;
+      case 1: return <span>Cart</span>;
+    }
+  }
   render() {
+    let active_tab = this.state.ActiveTab
     return (
       <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-        </header>
+        <Nav activeTab={active_tab} onTabChange={this.handleTabChange}/>
+        <div>
+  {this.state.cart.length} items
+</div>
+        <main className="App-content">
+        {this.renderComponent()}
+        </main>
       </div>
     );
   }
